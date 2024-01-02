@@ -1,7 +1,7 @@
 # EZ-Intern-Task
 
-Framework - Any Python Framework
-Database - SQL / NoSQL Database
+Framework - Any Python Framework <br>
+Database - SQL / NoSQL Database<br>
 Create a secure file-sharing system between two different types of users. For
 implementation -
 You need to create REST API’s for the following action.
