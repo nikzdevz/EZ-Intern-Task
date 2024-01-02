@@ -14,6 +14,9 @@ serializer = URLSafeTimedSerializer(app.secret_key)
 def index():
     return render_template('UserLogin.html')
 
+@app.route('/UserDashboard')
+def UserDashBoard():
+    return f'OPs Dashboard'
 
 @app.route('/usersignup', methods=['POST'])
 def signup():
@@ -43,7 +46,7 @@ def userLogin():
     if user and user_password == user[1]:
         session['loggedInName'] = user[0]
         session['loggedInEmail'] = user_email
-        return redirect(url_for('OPsHome'))
+        return redirect(url_for('UserDashboard'))
     else:
         return "Invalid username or password"
 
