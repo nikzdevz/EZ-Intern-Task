@@ -4,8 +4,8 @@ Framework - Any Python Framework <br>
 Database - SQL / NoSQL Database<br>
 Create a secure file-sharing system between two different types of users. For
 implementation -
-You need to create REST API’s for the following action.
-User 1: Operation User
+You need to create REST API’s for the following action.<br>
+User 1: Operation User<br>
 Action which could be done by an Ops User
 1. Login
 2. Upload File*
