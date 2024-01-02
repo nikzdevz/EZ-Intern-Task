@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Verified</title>
+    <meta http-equiv="refresh" content="5;url=/">
+</head>
+<body>
+    <h1>Email Verified Successfully!</h1>
+    <p>Redirecting to the home page in <span id="countdown">5</span> seconds...</p>
+<script>
+        var count = 5; // Initial countdown value in seconds
+        var countdown = setInterval(function() {
+            document.getElementById('countdown').innerText = count;
+            count--;
+            if (count < 0) {
+                clearInterval(countdown);
+            }
+        }, 1000); // Update countdown every second (1000ms)
+    </script>
+</body>
+</html>

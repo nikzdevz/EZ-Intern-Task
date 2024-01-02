@@ -1,0 +1,53 @@
+/* style.css */
+
+/* Reset default margin and padding */
+body,
+h1,
+form {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 20px; /* Adds space below the heading */
+}
+
+form {
+    display: block;
+    width: 300px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label,
+input {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="submit"] {
+    width: calc(100% - 20px);
+    padding: 8px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+}
+
+input[type="submit"] {
+    width : 100%;
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+}

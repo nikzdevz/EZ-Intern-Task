@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Op User Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style1.css') }}">
+</head>
+<body>
+    <h1>Op user Portal</h1>
+    <div class="email-container">
+        <p>The Op user's name is: {{ name }}</p>
+    </div>
+
+    <div class="upload-container">
+        <form id="uploadForm" action="/opsUploadFile" method="post" enctype="multipart/form-data">
+            <input type="file" id="fileUpload" name="fileUpload" accept=".pptx, .docx, .xlsx">
+            <input type = "submit" value="Upload">
+<!--            <label for="fileUpload" class="upload-btn">Upload File</label>-->
+<!--            <button type="submit" style="display: none;"></button>-->
+        </form>
+    </div>
+
+<!--    <script>-->
+<!--        document.querySelector('.upload-btn').addEventListener('click', function() {-->
+<!--            document.getElementById('fileUpload').click();-->
+<!--        });-->
+<!--    </script>-->
+
+</body>
+</html>
