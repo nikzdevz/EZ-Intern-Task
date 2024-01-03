@@ -1,11 +1,13 @@
-from flask import Flask, request, render_template, redirect, url_for, session
+import json
+
+from flask import Flask, request, render_template, redirect, url_for, session, send_file
 import mysql.connector
 from flask_session import Session
 from itsdangerous import URLSafeTimedSerializer
 
 app = Flask(__name__)
 
-app.secret_key = 'your_secret_key'
+app.secret_key = '545vfdb5fv54eergojfwe921c'
 
 serializer = URLSafeTimedSerializer(app.secret_key)
 
@@ -14,9 +16,73 @@ serializer = URLSafeTimedSerializer(app.secret_key)
 def index():
     return render_template('UserLogin.html')
 
-@app.route('/UserDashboard')
-def UserDashBoard():
-    return f'OPs Dashboard'
+
+from flask import render_template
+
+
+@app.route('/download_file/<token>', methods=['GET'])
+def download_file(token):
+    try:
+        user_data = serializer.loads(token, max_age=3600)
+        user_email = user_data['email']
+        assignmentID = user_data['assignmentID']
+        if 'loggedInEmail' in session:
+            if user_email != session.get('loggedInEmail'):
+                return "UnAurthorized user trying to download file"
+
+            db_connection = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                passwd="",
+                database="ezdatabase"
+            )
+            db_cursor = db_connection.cursor(buffered=True)
+
+            check_query = "SELECT filename FROM uploadsdb WHERE assignmentID = %s"
+            db_cursor.execute(check_query, (assignmentID,))
+            file_data = db_cursor.fetchone()
+            if file_data:
+                filename = file_data[0]
+                file_path = f"opUploads/{filename}"
+                return send_file(file_path, as_attachment=True)
+
+            return "File not found"
+
+        else:
+            # Handle case when 'loggedInEmail' is not in the session
+            return "No logged-in email found in session"
+    except:
+        return "Invalid or expired token."
+
+
+@app.route('/download/<assignmentID>', methods=['GET'])
+def download_fle(assignmentID):
+    filetoken = {'email': session.get('loggedInEmail'), 'assignmentID': assignmentID}
+    token = serializer.dumps(filetoken)
+    data = {
+        'message': 'success',
+        'download-link': f'/download_file/{token}'
+    }
+    return json.dumps(data, indent=4)
+
+
+@app.route('/UserDashboard', methods=['GET'])
+def UserDashboard():
+    db_connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        passwd="",
+        database="ezdatabase"
+    )
+    db_cursor = db_connection.cursor(buffered=True)
+
+    select_query = "SELECT filename, assignmentID FROM uploadsDB"
+    db_cursor.execute(select_query)
+
+    data = db_cursor.fetchall()
+
+    return render_template('user_dashboard.html', files=data)
+
 
 @app.route('/usersignup', methods=['POST'])
 def signup():
@@ -50,9 +116,9 @@ def userLogin():
     else:
         return "Invalid username or password"
 
+
 @app.route('/verify/<token>')
 def verify_email(token):
-
     try:
         user_data = serializer.loads(token, max_age=3600)
         user_email = user_data['email']
@@ -88,13 +154,35 @@ def OPs():
     return render_template('OpsLogin.html')
 
 
+import random
+
+import random
+
+
 @app.route('/opsUploadFile', methods=['POST'])
 def opsUploadFile():
     if 'fileUpload' in request.files:
         uploaded_file = request.files['fileUpload']
         if uploaded_file.filename != '':
+            db_connection = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                passwd="",
+                database="ezdatabase"
+            )
+            db_cursor = db_connection.cursor(buffered=True)
+            while True:
+                assignment_id = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+                check_query = "SELECT assignmentID FROM uploadsDB WHERE assignmentID = %s"
+                db_cursor.execute(check_query, (assignment_id,))
+                existing_assignment = db_cursor.fetchone()
+                if not existing_assignment:
+                    break
             uploaded_file.save('opUploads/' + uploaded_file.filename)
-            return "File uploaded successfully!"
+            insert_query = "INSERT INTO uploadsDB (filename, assignmentID) VALUES (%s, %s)"
+            db_cursor.execute(insert_query, (uploaded_file.filename, assignment_id))
+            db_connection.commit()
+            return "File uploaded successfully! Assignment ID: " + assignment_id
     return "No file selected."
 
 

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style3.css') }}">
+</head>
+<body>
+    <h1>User Dashboard</h1>
+    <div class="file-cards">
+        {% for file in files %}
+        <div class="file-card">
+            <h2>{{ file[0] }}</h2>
+            <p>Assignment ID: {{ file[1] }}</p>
+            <button class="download-btn" onclick="downloadFile('{{ file[1] }}')">Download</button>
+        </div>
+        {% endfor %}
+    </div>
+    <script>
+        function downloadFile(assignmentID) {
+            fetch(`/download/${assignmentID}`, {
+                method: 'GET'
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json(); // Get response body as text
+                } else {
+                    throw new Error('Network response was not ok.');
+                }
+            })
+            .then(responseText => {
+                console.log('Response message:', responseText['message']); // Log the response message
+                window.open(responseText['download-link'], '_blank');
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+    </script>
+</body>
+</html>
